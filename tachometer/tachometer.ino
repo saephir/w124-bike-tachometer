@@ -7,16 +7,22 @@ const int PIN_OUT = 13;
 Measurement measurement;
 Output output(PIN_OUT);
 
+#ifdef SIMULATION
 Simulation sim(&measurement);
+#endif
 
 void setup() {
   digitalWrite(PIN_OUT, LOW);
   pinMode(PIN_OUT, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(2), onWheelTurned, RISING);
 
-  sim.changeSpeedTo(15, 15);
+#ifdef SIMULATION
+  sim.changeSpeedTo(30, 20);
+  sim.changeSpeedTo(10, 10);
+  sim.wait(10);
   
   sim.start();
+#endif
 }
 
 void onWheelTurned() {
@@ -40,5 +46,7 @@ void loop() {
     output.swap();
   }
   measurement.wheelNotTurned(millis());
+#ifdef SIMULATION
   sim.runStep();
+#endif
 }
